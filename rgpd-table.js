@@ -4,31 +4,37 @@ var jsonArray = [{ "consentConfigId":"5" , "purpose":"Marketing APV" , "channel"
                 {"consentConfigId":"3" , "purpose":"VIP evento concecinario" , "channel":"Email" , "entities" : "Equipa de Demonstração" , "ConsentId" : "19" , "IsConsented" : "True"} , 
                 {"consentConfigId":"14" , "purpose":"Mails Malucos Concessionario" , "channel":"Email" , "entities" : "Equipa de Demonstração" , "ConsentId" : "0" , "IsConsented" : "False"} , 
                 {"consentConfigId":"6" , "purpose":"Marketing APV" , "channel":"CellPhone" , "entities" : "Equipa de Demonstração" , "ConsentId" : "0" , "IsConsented" : "False"} ,
-                {"consentConfigId":"15" , "purpose":"Chamadas Nível 1" , "channel":"CellPhone" , "entities" : "BMW MOTORRAD" , "ConsentId" : "0" , "IsConsented" : "True"}]
+                {"consentConfigId":"15" , "purpose":"Chamadas Nível 1" , "channel":"CellPhone" , "entities" : "BMW MOTORRAD" , "ConsentId" : "0" , "IsConsented" : "True"} ,
+                {"consentConfigId":"20" , "purpose":"Chamadas Nível 1" , "channel":"CellPhone" , "entities" : "MSCar" , "ConsentId" : "16" , "IsConsented" : "False"} ,
+                {"consentConfigId":"21" , "purpose":"Chamadas Nível 1" , "channel":"Email" , "entities" : "MSCar" , "ConsentId" : "29" , "IsConsented" : "True"} ]
 
 //On document ready and loaded!
 $( document ).ready(function() {
     jsonArray.forEach(function(json) {
         var elementId = replaceES(json.purpose.trim());
+        var currTableId = elementId + '-table';
 
         if($('#'+ elementId +'' ).length > 0 ) { //If the purpose  already exists!
-            if($('#' + elementId + '-table tr:contains(' + json.entities + ')').length > 0) { //If the entitie row already exists in that table
-                addExistingInputBox(elementId + '-table',json.entities,json.channel,json.ConsentId,json.IsConsented);
+            if($('#' + currTableId + ' tr:contains(' + json.entities + ')').length > 0) { //If the entitie row already exists in that table
+                addExistingInputBox(currTableId,json.entities,json.channel,json.ConsentId,json.IsConsented);
                 return
             }
-            addTableRows(elementId + '-table',json.entities,json.channel,json.consentConfigId,json.ConsentId,json.IsConsented)
+            addTableRows(currTableId,json.entities,json.channel,json.consentConfigId,json.ConsentId,json.IsConsented)
         } else {
 
         createNavButton(json.purpose,elementId); // Needs the name to populate the button and the ID
 
         createDisplayDiv(elementId); // Only uses the id
 
-        $('#' + elementId + '').append(createTable(json.purpose,elementId))
+        $('#' + elementId + '').append(createTable(json.purpose,elementId)) // Appends to the div a new table with the header pre-created(Email,CellPhone)
 
-        addTableRows(elementId + '-table',json.entities,json.channel,json.consentConfigId,json.ConsentId,json.IsConsented); //  Adds a TableRow with the channel.
+        addTableRows(currTableId,json.entities,json.channel,json.consentConfigId,json.ConsentId,json.IsConsented); //  Adds a TableRow with the channel.
 
         }
     });
+    $( "td:empty" ) 
+       .text( "Sem configuração" )
+       .addClass('empty-td');
 });
 
 
@@ -87,10 +93,32 @@ function addExistingInputBox(tableId,entitie,channelType,ConsentId,IsConsented) 
 function createCheckBox(isChecked) {
     var checkBoxText = '';
     if(isChecked === "True") {
-        checkBoxText = '<input class="check-box" type="checkbox" checked>'
+        checkBoxText = '<input class="check-box" type="checkbox" checked=checked>'
     } else {
         checkBoxText = '<input class="check-box" type="checkbox">'
     }
 
     return checkBoxText;
+}
+
+//Gets all the checkboxes results and gets the ids of its DOM parents. That are the corresponding consentId for the first parent and the second parent is the ConsentConfigId
+// *Return*-- The json value of check checkbox with ConsentConfigs Ids and a ConsentId with a True or False value if the input is Checked
+function onSaveTables() {
+    var checkBoxes = $('.check-box')
+    var resultJSON_Array = [];
+    $.each(checkBoxes,function(index,checkbox) {
+        var resultjson = {};
+
+        resultjson.ConsentConfigId = $(checkbox).parent().parent().attr('id');
+        resultjson.ConsentId = $(checkbox).parent().attr('data-consent-id');
+        resultjson.IsConsented = $(checkbox).is(":checked");
+
+        //console.log('ConsentConfig ID : '+ $(checkbox).parent().parent().attr('id'));//Get the ConsentConfig Id that is the ID of the <tr>
+        //console.log('Consent ID : '+ $(checkbox).parent().attr('data-consent-id'));//Get the Conset Id that is the parent data-consent-id of the checkbox
+        //console.log( index + " : " + $(checkbox).is(":checked")); // Gets the boolean value if the checkbox is checked or not.
+
+        resultJSON_Array.push(resultjson)
+    });
+
+    return resultJSON_Array;
 }

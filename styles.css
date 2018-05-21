@@ -42,7 +42,7 @@ body {font-family: "Lato", sans-serif;}
     border: 1px solid #ccc;
     width: 70%;
     border-left: none;
-    height: 300px;
+   /* height: 300px; */
 }
 /*Style for all the tables*/
 .rgpd-table th {
@@ -55,4 +55,12 @@ body {font-family: "Lato", sans-serif;}
 
 td.entitie-cell {
     text-align: left;
+    padding-right: 10px;
+    width: auto;
+}
+
+.empty-td {
+    font-size: small;
+    background-color: rgb(102, 0, 94);
+    color: white;
 }
