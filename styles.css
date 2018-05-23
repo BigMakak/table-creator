@@ -46,11 +46,27 @@ body {font-family: "Lato", sans-serif;}
 }
 /*Style for all the tables*/
 .rgpd-table th {
-    padding: 5px 5px 5px 5px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(76, 117, 206);
+    color: white;
 }
 
 .rgpd-table td {
     text-align: center;
+}
+
+.rgpd-table td, .rgpd-table th {
+    border: 1px solid #ddd;
+    padding: 4px;
+}
+
+.rgpd-table tr:hover {background-color: #ddd;}
+
+.rgpd-table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
 }
 
 td.entitie-cell {
@@ -61,6 +77,5 @@ td.entitie-cell {
 
 .empty-td {
     font-size: small;
-    background-color: rgb(102, 0, 94);
-    color: white;
+        
 }
